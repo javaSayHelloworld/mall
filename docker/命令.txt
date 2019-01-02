@@ -1,0 +1,29 @@
+停止所有容器：
+docker stop $(docker ps -aq)
+
+删除所有容器：
+docker rm $(docker ps -aq)
+
+删除所有镜像：
+docker rmi $(docker ps -aq)
+
+查看容器日志：
+docker logs -f -t --tail 行数 容器名
+
+
+docker run -it --name tomcat -p 80:8080 tomcat /bin/bash
+
+exec命令用来进入docker容器：
+docker exec -it 7cbc7d04c713  /bin/bash 
+
+复制容器文件到宿主机器上
+docker cp d8739b3e81d0:/etc/mysql/conf.d/mysql.cnf ./mysql/conf/mysql.cnf
+
+http://192.168.50.126/index.html
+http://192.168.50.126:8080/decrease.do
+
+执行docker run命令带--rm命令选项，等价于在容器退出后，执行docker rm -v，清理foreground容器，通常用于运行调试容器，如redis客户端
+docker run --rm -it --link redis:redisClient redis /bin/bash
+
+进入zk
+docker exec -it b2c8aac8627b zkCli.sh
