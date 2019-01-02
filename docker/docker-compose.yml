@@ -1,69 +1,101 @@
 version: '3'
 services: 
-    zookeeper: 
-        container_name: zookeeper
-        image: bitnami/zookeeper:latest
+    zookeeper1:
+        image: 'bitnami/zookeeper:latest'
         networks: 
             mall:
                 aliases:
-                    - zk
-        ports: 
-            - "2181:2181"
-        volumes:
-            - ./zookeeper_cluster/zookeeper1/conf:/opt/bitnami/zookeeper/conf
-            - ./zookeeper_cluster/zookeeper1/data:/opt/bitnami/zookeeper/data
-            - ./zookeeper_cluster/zookeeper1/datalog:/opt/bitnami/zookeeper/log
-        environment:
-            - ALLOW_ANONYMOUS_LOGIN=yes
-    zookeeper1:
-        image: 'bitnami/zookeeper:latest'
+                    - zookeeper1
         ports:
-            - '2181'
-            - '2888'
-            - '3888'
+            - "12181:2181"
         volumes:
-            - /zookeeper_cluster/zookeeper-persistence:/bitnami/zookeeper
+            - ./zookeeper_cluster/zookeeper-persistence1:/bitnami/zookeeper
         environment:
             - ZOO_SERVER_ID=1
-            - ZOO_SERVERS=0.0.0.0:2888:3888,zookeeper2:2888:3888,zookeeper3:2888:3888
+            - ZOO_SERVERS=zookeeper1:2888:3888,zookeeper2:2888:3888,zookeeper3:2888:3888
             - ALLOW_ANONYMOUS_LOGIN=yes
     zookeeper2:
         image: 'bitnami/zookeeper:latest'
+        networks: 
+            mall:
+                aliases:
+                    - zookeeper2
         ports:
-            - '2181'
-            - '2888'
-            - '3888'
+            - "22181:2181"
         volumes:
-            - /zookeeper_cluster/zookeeper-persistence:/bitnami/zookeeper
+            - ./zookeeper_cluster/zookeeper-persistence2:/bitnami/zookeeper
         environment:
             - ZOO_SERVER_ID=2
-            - ZOO_SERVERS=zookeeper1:2888:3888,0.0.0.0:2888:3888,zookeeper3:2888:3888
+            - ZOO_SERVERS=zookeeper1:2888:3888,zookeeper2:2888:3888,zookeeper3:2888:3888
             - ALLOW_ANONYMOUS_LOGIN=yes
     zookeeper3:
         image: 'bitnami/zookeeper:latest'
+        networks: 
+            mall:
+                aliases:
+                    - zookeeper2
         ports:
-            - '2181'
-            - '2888'
-            - '3888'
+            - "32181:2181"
         volumes:
-            - /zookeeper_cluster/zookeeper-persistence:/bitnami/zookeeper
+            - ./zookeeper_cluster/zookeeper-persistence3:/bitnami/zookeeper
         environment:
             - ZOO_SERVER_ID=3
-            - ZOO_SERVERS=zookeeper1:2888:3888,zookeeper2:2888:3888,0.0.0.0:2888:3888
+            - ZOO_SERVERS=zookeeper1:2888:3888,zookeeper2:2888:3888,zookeeper3:2888:3888
             - ALLOW_ANONYMOUS_LOGIN=yes
-    kafka: 
-        container_name: kafka
+    kafka1: 
+        container_name: kafka1
         image: wurstmeister/kafka
         networks: 
             - mall
         ports: 
-            - "9092:9092"
+            - "19092:9092"
+            - "19999:9999"
         depends_on: 
-            - zookeeper
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
         environment: 
-            KAFKA_ADVERTISED_HOST_NAME: 192.168.50.126
+            JMX_PORT: "9999"
+            KAFKA_ADVERTISED_HOST_NAME: "kafka1"
             KAFKA_ADVERTISED_PORT: "9092"
-            KAFKA_ZOOKEEPER_CONNECT: zk:2181
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
+            KAFKA_BROKER_ID: "1"
+    kafka2: 
+        container_name: kafka2
+        image: wurstmeister/kafka
+        networks: 
+            - mall
+        ports: 
+            - "29092:9092"
+            - "29999:9999"
+        depends_on: 
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
+        environment: 
+            JMX_PORT: "9999"
+            KAFKA_ADVERTISED_HOST_NAME: "kafka2"
+            KAFKA_ADVERTISED_PORT: "9092"
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
+            KAFKA_BROKER_ID: "2"
+    kafka3: 
+        container_name: kafka3
+        image: wurstmeister/kafka
+        networks: 
+            - mall
+        ports: 
+            - "39092:9092"
+            - "39999:9999"
+        depends_on: 
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
+        environment: 
+            JMX_PORT: "9999"
+            KAFKA_ADVERTISED_HOST_NAME: "kafka3"
+            KAFKA_ADVERTISED_PORT: "9092"
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
+            KAFKA_BROKER_ID: "3"
     redis:
         container_name: redis
         image: redis
