@@ -56,8 +56,8 @@ services:
             - zookeeper3
         environment: 
             JMX_PORT: "9999"
-            KAFKA_ADVERTISED_HOST_NAME: "kafka1"
-            KAFKA_ADVERTISED_PORT: "9092"
+            KAFKA_ADVERTISED_HOST_NAME: "192.168.50.126"
+            KAFKA_ADVERTISED_PORT: "19092"
             KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
             KAFKA_BROKER_ID: "1"
     kafka2: 
@@ -74,8 +74,8 @@ services:
             - zookeeper3
         environment: 
             JMX_PORT: "9999"
-            KAFKA_ADVERTISED_HOST_NAME: "kafka2"
-            KAFKA_ADVERTISED_PORT: "9092"
+            KAFKA_ADVERTISED_HOST_NAME: "192.168.50.126"
+            KAFKA_ADVERTISED_PORT: "29092"
             KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
             KAFKA_BROKER_ID: "2"
     kafka3: 
@@ -92,8 +92,8 @@ services:
             - zookeeper3
         environment: 
             JMX_PORT: "9999"
-            KAFKA_ADVERTISED_HOST_NAME: "kafka3"
-            KAFKA_ADVERTISED_PORT: "9092"
+            KAFKA_ADVERTISED_HOST_NAME: "192.168.50.126"
+            KAFKA_ADVERTISED_PORT: "39092"
             KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
             KAFKA_BROKER_ID: "3"
     redis:
